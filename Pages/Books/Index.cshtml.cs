@@ -21,27 +21,30 @@ namespace Andreea_Zoicas_Lab2.Pages.Books
         }
 
         public IList<Book> Book { get;set; } = default!;
-
-        public async Task OnGetAsync(int? authorId)
+        public BookData BookD { get; set; }
+        public int BookID { get; set; }
+        public int CategoryID { get; set; }
+        public async Task OnGetAsync(int? id, int? categoryID)
         {
-            var authors = await _context.Author.ToListAsync();
-            ViewData["AuthorID"] = new SelectList(authors, "ID", "LastName");
+            BookD = new BookData();
 
-           
-            IQueryable<Book> booksQuery = _context.Book
-                .Include(b => b.Author)
-                .Include(b => b.Publisher);
-
-            
-            if (authorId.HasValue)
+            //se va include Author conform cu sarcina de la lab 2
+            BookD.Books = await _context.Book
+                 .Include(b => b.Author)
+            .Include(b => b.Publisher)
+            .Include(b => b.BookCategories)
+            .ThenInclude(b => b.Category)
+            .AsNoTracking()
+            .OrderBy(b => b.Title)
+            .ToListAsync();
+            if (id != null)
             {
-                booksQuery = booksQuery.Where(b => b.AuthorID == authorId);
+                BookID = id.Value;
+                Book book = BookD.Books
+                .Where(i => i.ID == id.Value).Single();
+                BookD.Categories = book.BookCategories.Select(s => s.Category);
             }
-
-           
-            Book = await booksQuery.ToListAsync();
         }
-
 
 
 
