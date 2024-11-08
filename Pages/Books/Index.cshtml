@@ -10,31 +10,43 @@
 <p>
     <a asp-page="Create">Create New</a>
 </p>
-<form method="get">
-    <label for="AuthorDropdown">Select Author:</label>
-    <select id="AuthorDropdown" name="authorId" class="form-control" onchange="this.form.submit()">
-        <option value="">All Authors</option>
-        @if (ViewData["AuthorID"] is SelectList authorList)
-        {
-            foreach (var author in authorList)
-            {
-                <option value="@author.Value">
-                    @author.Text
-                </option>
-            }
-        }
-    </select>
+<form asp-page="./Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Find by Book Title / Author Name:
+            <input type="text" name="SearchString" value="@Model.CurrentFilter" />
+            <input type="submit" value="Search" class="btn btn-primary" /> |
+            <a asp-page="./Index">Back to full List</a>
+        </p>
+    </div>
 </form>
+
 
 <table class="table">
     <thead>
         <tr>
-            <th>@Html.DisplayNameFor(model => model.Book[0].Title)</th>
-            <th>@Html.DisplayNameFor(model => model.Book[0].Author)</th>
-            <th>@Html.DisplayNameFor(model => model.Book[0].Price)</th>
-            <th>@Html.DisplayNameFor(model => model.Book[0].PublishingDate)</th>
-            <th>@Html.DisplayNameFor(model => model.Book[0].Publisher.PublisherName)</th>
-            <th>@Html.DisplayNameFor(model => model.Book[0].BookCategories)</th>
+            <th>
+                <a asp-page="./Index" asp-route-sortOrder="@Model.TitleSort">
+                    @Html.DisplayNameFor(model => model.Book[0].Title)
+                </a>
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Book[0].Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Book[0].PublishingDate)
+            </th>
+            <th colspan="2">
+                <a asp-page="./Index" asp-route-sortOrder="@Model.AuthorSort">
+                    @Html.DisplayNameFor(model => model.Book[0].Author)
+                </a>
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Book[0].Publisher)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Book[0].BookCategories)
+            </th>
 
 
             <th></th>
@@ -50,7 +62,17 @@
             }
             <tr class="@selectedRow">
                 <td>@Html.DisplayFor(modelItem => item.Title)</td>
-                <td>@Html.DisplayFor(modelItem => item.Author.FirstName) @Html.DisplayFor(modelItem => item.Author.LastName)</td>
+                <td>
+                    @if (item.Author != null)
+                    {
+                        @Html.DisplayFor(modelItem => item.Author.FirstName)
+                        @Html.DisplayFor(modelItem => item.Author.LastName)
+                    }
+                    else
+                    {
+                        <span>N/A</span>
+                    }
+                </td>
                 <td>@Html.DisplayFor(modelItem => item.Price)</td>
                 <td>@Html.DisplayFor(modelItem => item.PublishingDate)</td>
                 <td>@Html.DisplayFor(modelItem => item.Publisher.PublisherName)</td>
