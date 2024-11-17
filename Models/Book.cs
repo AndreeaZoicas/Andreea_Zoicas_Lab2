@@ -9,8 +9,10 @@ namespace Andreea_Zoicas_Lab2.Models
         public int ID { get; set; }
         [Display(Name = "Book Title")]
         public string Title { get; set; }
-    
+       
+
         public decimal Price { get; set; }
+        
 
         [DataType(DataType.Date)]
         public DateTime PublishingDate { get; set; }
